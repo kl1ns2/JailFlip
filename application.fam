@@ -1,0 +1,20 @@
+# JailFlip — application manifest (FAP)
+# Build with ufbt:  ufbt            (build)
+#                   ufbt launch     (build + upload + run on connected Flipper)
+App(
+    appid="jailflip",
+    name="JailFlip",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="jailflip_app",
+    stack_size=4 * 1024,
+    fap_category="Tools",
+    fap_version=(0, 1),
+    fap_description="JailFlip — mod hub for Flipper Zero: Flipeo plugin store, boot-logo, key manager.",
+    fap_author="JailFlip",
+    fap_icon="images/jailflip.png",
+    requires=[
+        "gui",
+        "storage",
+        "dialogs",
+    ],
+)
