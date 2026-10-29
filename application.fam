@@ -12,6 +12,9 @@ App(
     fap_description="JailFlip — mod hub for Flipper Zero: Flipeo plugin store, boot-logo, key manager.",
     fap_author="JailFlip",
     fap_icon="images/jailflip.png",
+    # Bundled base-plugin catalogue. ufbt/fbt packs this folder into the .fap
+    # and the loader extracts it to /ext/apps_assets/jailflip/ on first run.
+    fap_file_assets="assets",
     requires=[
         "gui",
         "storage",

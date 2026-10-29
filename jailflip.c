@@ -76,6 +76,12 @@ static uint32_t jailflip_back_to_menu_callback(void* context) {
     return JailFlipViewMenu;
 }
 
+// Back from the "+" available list returns to the Flipeo store list.
+static uint32_t jailflip_back_to_store_callback(void* context) {
+    UNUSED(context);
+    return JailFlipViewStore;
+}
+
 // Back from the main menu exits the app.
 static uint32_t jailflip_exit_callback(void* context) {
     UNUSED(context);
@@ -98,6 +104,7 @@ static JailFlipApp* jailflip_alloc(void) {
 
     app->menu = submenu_alloc();
     app->store = submenu_alloc();
+    app->add = submenu_alloc();
     app->keys = submenu_alloc();
     app->detail = widget_alloc();
 
@@ -107,6 +114,8 @@ static JailFlipApp* jailflip_alloc(void) {
     view_dispatcher_add_view(
         app->view_dispatcher, JailFlipViewStore, submenu_get_view(app->store));
     view_dispatcher_add_view(
+        app->view_dispatcher, JailFlipViewAdd, submenu_get_view(app->add));
+    view_dispatcher_add_view(
         app->view_dispatcher, JailFlipViewKeys, submenu_get_view(app->keys));
     view_dispatcher_add_view(
         app->view_dispatcher, JailFlipViewDetail, widget_get_view(app->detail));
@@ -114,10 +123,12 @@ static JailFlipApp* jailflip_alloc(void) {
     // Back-button navigation.
     view_set_previous_callback(submenu_get_view(app->menu), jailflip_exit_callback);
     view_set_previous_callback(submenu_get_view(app->store), jailflip_back_to_menu_callback);
+    view_set_previous_callback(submenu_get_view(app->add), jailflip_back_to_store_callback);
     view_set_previous_callback(submenu_get_view(app->keys), jailflip_back_to_menu_callback);
     view_set_previous_callback(widget_get_view(app->detail), jailflip_back_to_menu_callback);
 
     jailflip_store_load(app);
+    jailflip_catalog_load(app);
     jailflip_build_main_menu(app);
 
     return app;
@@ -126,11 +137,13 @@ static JailFlipApp* jailflip_alloc(void) {
 static void jailflip_free(JailFlipApp* app) {
     view_dispatcher_remove_view(app->view_dispatcher, JailFlipViewMenu);
     view_dispatcher_remove_view(app->view_dispatcher, JailFlipViewStore);
+    view_dispatcher_remove_view(app->view_dispatcher, JailFlipViewAdd);
     view_dispatcher_remove_view(app->view_dispatcher, JailFlipViewKeys);
     view_dispatcher_remove_view(app->view_dispatcher, JailFlipViewDetail);
 
     submenu_free(app->menu);
     submenu_free(app->store);
+    submenu_free(app->add);
     submenu_free(app->keys);
     widget_free(app->detail);
 

@@ -1,6 +1,7 @@
 # JailFlip
 
-A **mod hub** for the Flipper Zero, packaged as a single app (`.fap`).
+A **standalone app** (`.fap`) for the Flipper Zero — **not** custom firmware.
+Built and targeted for **Momentum**, it also works on the official SDK.
 
 > ⚠️ "Jailbreak" is borrowed loosely here. The Flipper Zero is **not** a locked
 > device — its firmware is open source. JailFlip doesn't bypass any security;
@@ -11,10 +12,24 @@ A **mod hub** for the Flipper Zero, packaged as a single app (`.fap`).
 
 | Module | What it does |
 | --- | --- |
-| **Flipeo** | Sileo-style browser of installed plugins. Scans `/ext/apps/<Category>/*.fap`, lists them, and launches the selected one through the system loader. |
-| **Boot Logo** | Pick a `128x64` `.bmx` image from the SD card and stage it as a boot splash (applied at startup by custom firmwares that support a user boot logo, e.g. Momentum). |
+| **Flipeo** | Sileo-style plugin browser. The main list shows installed plugins (scanned from `/ext/apps/<Category>/*.fap`). The header reads **Flipeo**; the top **＋ Add plugin** row opens a catalog of available plugins read from a file. Selecting any entry shows its details and launches it (if installed) via the system loader. |
+| **Boot Logo** | Pick a `128x64` `.bmx` image from the SD card and stage it as a boot splash. On **Momentum**: *Settings → Desktop → Boot Graphics* can point at it. |
 | **Keys** | Read-only browser over your stored `SubGHz` / `NFC` / `iButton` / `LF RFID` files. Inspect what you've saved; emulation stays in the dedicated apps. |
 | **About** | What it is, in-device. |
+
+## The plugin catalog (the "＋" list)
+
+Base plugins ship inside the `.fap` as `assets/catalog.txt`. `ufbt`/`fbt`
+packs the `assets/` folder (`fap_file_assets`) and the loader extracts it to
+`/ext/apps_assets/jailflip/catalog.txt` on first launch. Edit that file (on the
+SD card or in `assets/` before building) to change the list:
+
+```
+# name | category | path | description
+Clock | Tools | /ext/apps/Tools/clock.fap | Simple on-screen clock.
+```
+
+Flipeo marks an entry **installed** when its `path` exists on the SD card.
 
 ## Project layout
 
@@ -25,6 +40,7 @@ jailflip_i.h        # shared app struct + declarations
 jailflip_store.c    # Flipeo plugin browser + launcher
 jailflip_keys.c     # key-file browser
 jailflip_logo.c     # boot-logo staging
+assets/catalog.txt  # bundled base-plugin catalog (packed into the .fap)
 images/jailflip.png # 10x10 app icon
 ```
 
@@ -45,15 +61,16 @@ ufbt launch       # build, upload to a connected Flipper, and run it
 
 Copy `dist/jailflip.fap` to `SD:/apps/Tools/` to keep it on the device.
 
-### Target firmware
+### Target firmware — Momentum
 
-Builds against the current official SDK by default. To target a specific
-firmware (Momentum / Unleashed / RogueMaster):
+Point `ufbt` at the Momentum SDK, then build as usual:
 
 ```bash
-ufbt update --channel=release          # official
-# or point ufbt at a custom firmware's SDK per that firmware's docs
+ufbt update --index-url=https://up.momentum-fw.dev/firmware/directory.json
+ufbt
 ```
+
+(You can keep a separate official toolchain with `ufbt update --channel=release`.)
 
 The Boot Logo feature only takes effect on firmwares that read a user splash
 image; on stock firmware the file is simply staged and ignored.

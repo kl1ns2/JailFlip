@@ -1,0 +1,15 @@
+# JailFlip / Flipeo — base plugin catalog
+# One plugin per line:   name | category | path | description
+# Lines starting with '#' and blank lines are ignored.
+# "path" is where the .fap lives once installed, under /ext/apps/<Category>/.
+# Flipeo shows "installed" if that file exists and lets you launch it.
+
+Clock          | Tools  | /ext/apps/Tools/clock.fap          | Simple on-screen clock.
+Pomodoro       | Tools  | /ext/apps/Tools/pomodoro.fap       | Focus / break timer.
+Calculator     | Tools  | /ext/apps/Tools/calculator.fap     | Basic calculator.
+Snake          | Games  | /ext/apps/Games/snake_game.fap     | Classic Snake game.
+Tetris         | Games  | /ext/apps/Games/tetris_game.fap    | Falling-blocks game.
+Arkanoid       | Games  | /ext/apps/Games/arkanoid_game.fap  | Brick-breaker game.
+UART Terminal  | GPIO   | /ext/apps/GPIO/uart_terminal.fap   | Serial terminal over GPIO.
+Metronome      | Media  | /ext/apps/Media/metronome.fap      | Audio metronome.
+WAV Player     | Media  | /ext/apps/Media/wav_player.fap     | Play WAV files from the SD card.

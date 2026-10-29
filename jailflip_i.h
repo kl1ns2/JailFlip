@@ -24,6 +24,10 @@
 #define JAILFLIP_DATA_DIR  "/ext/apps_data/jailflip"
 #define JAILFLIP_SPLASH    JAILFLIP_DATA_DIR "/splash.bmx"
 
+// Bundled assets extracted from the .fap by the loader (fap_file_assets).
+#define JAILFLIP_ASSETS_DIR "/ext/apps_assets/jailflip"
+#define JAILFLIP_CATALOG    JAILFLIP_ASSETS_DIR "/catalog.txt"
+
 // Folders scanned by the Keys browser.
 #define JAILFLIP_SUBGHZ_DIR  "/ext/subghz"
 #define JAILFLIP_NFC_DIR     "/ext/nfc"
@@ -33,7 +37,8 @@
 // View identifiers for the ViewDispatcher.
 typedef enum {
     JailFlipViewMenu,     // main menu (submenu)
-    JailFlipViewStore,    // Flipeo catalogue (submenu)
+    JailFlipViewStore,    // Flipeo: installed plugins (submenu)
+    JailFlipViewAdd,      // Flipeo "+": available plugins from catalog (submenu)
     JailFlipViewKeys,     // key category picker (submenu)
     JailFlipViewDetail,   // package / info detail (widget)
 } JailFlipView;
@@ -52,20 +57,28 @@ typedef struct {
     ViewDispatcher* view_dispatcher;
 
     Submenu* menu;      // main menu
-    Submenu* store;     // Flipeo list
+    Submenu* store;     // Flipeo: installed plugins
+    Submenu* add;       // Flipeo "+": available plugins from catalog
     Submenu* keys;      // key categories
     Widget* detail;     // scrollable detail / about screen
 
-    // Loaded catalogue (built-in defaults, or parsed from JAILFLIP_CATALOG).
+    // Installed plugins, discovered by scanning /ext/apps.
     JailFlipPackage* packages;
     size_t package_count;
+
+    // Available plugins, parsed from the bundled catalog file.
+    JailFlipPackage* available;
+    size_t available_count;
 } JailFlipApp;
 
 // jailflip_store.c
-void jailflip_store_load(JailFlipApp* app);
+void jailflip_store_load(JailFlipApp* app);        // scan installed .fap
 void jailflip_store_free(JailFlipApp* app);
-void jailflip_store_build_menu(JailFlipApp* app);
+void jailflip_catalog_load(JailFlipApp* app);      // parse bundled catalog file
+void jailflip_store_build_menu(JailFlipApp* app);  // installed list + "+" row
 void jailflip_store_show_detail(JailFlipApp* app, uint32_t index);
+void jailflip_store_open_add(JailFlipApp* app);    // open "+" available list
+void jailflip_store_show_available(JailFlipApp* app, uint32_t index);
 
 // jailflip_keys.c
 void jailflip_keys_build_menu(JailFlipApp* app);
